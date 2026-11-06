@@ -1,0 +1,51 @@
+%% UKH thesis and dissertation template (unofficial), following the
+%% UKH Presentation Guidelines V6.3 (September 2026).
+%%
+%% Compile with XeLaTeX and Biber. On Overleaf: Menu > Compiler > XeLaTeX.
+%% Class options (put inside [ ]):
+%%   numeric   numbered citations [1] instead of APA author-date
+%%   eqparens  equation numbers as (3.1) instead of 3.1
+%%   nokurdish switch off Sorani Kurdish support
+\documentclass{ukhthesis}
+
+\input{thesis-info}
+\addbibresource{references.bib}
+\graphicspath{{figures/}}
+
+%% Your own packages and commands go here.
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
+\begin{document}
+
+%% ------------------------------------------------ front pages (I, II, III ...)
+\frontmatter
+\maketitle                      % I   (number not shown)
+\makedeclaration                % II
+\makecommitteecertification     % III
+\input{front/dedication}        % optional
+\input{front/acknowledgements}  % optional
+\input{front/abstract}
+\tableofcontents
+\listoftables                   % delete if you have no tables
+\listoffigures                  % delete if you have no figures
+\input{front/abbreviations}     % delete if not needed
+\input{front/symbols}           % delete if not needed
+
+%% ------------------------------------------------ chapters (1, 2, 3 ...)
+\mainmatter
+\input{chapters/1-introduction}
+\input{chapters/2-literature-review}
+\input{chapters/3-methodology}
+\input{chapters/4-experimental-work}
+\input{chapters/5-results-and-discussion}
+\input{chapters/6-conclusions}
+
+%% ------------------------------------------------ end pages (R1, G1, A1 ...)
+\references                     % R1, R2 ...
+\input{end/glossary}            % G1 ... delete if not needed
+\appendix                       % A1, A2 ...
+\input{end/appendix-1-ethics}   % the Ethical Consent Approval form is required
+\input{end/appendix-2-example}
+
+\end{document}

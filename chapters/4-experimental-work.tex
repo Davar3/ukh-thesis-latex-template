@@ -1,0 +1,29 @@
+\chapter{Experimental Work}
+\label{ch:experiments}
+
+Describe the data, the experimental set-up and the evaluation measures.
+
+\section{Tables}
+Table captions are centred above the table in 10~pt type, and the table text is single
+spaced (Guidelines 3d and 6a). Keep tables within the text width; put a very wide table on
+its own landscape page.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Example of a results table}
+  \label{tab:example}
+  \begin{tabular}{@{}lccc@{}}
+    \toprule
+    Method        & Recall@5 & MRR@10 & nDCG@10 \\
+    \midrule
+    Keyword (BM25) & 0.82    & 0.71   & 0.74 \\
+    Embedding      & 0.64    & 0.52   & 0.57 \\
+    Hybrid         & 0.86    & 0.75   & 0.78 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Refer to tables in the text as table~\ref{tab:example}.
+
+\section{Summary}
+Summarise the experimental set-up.

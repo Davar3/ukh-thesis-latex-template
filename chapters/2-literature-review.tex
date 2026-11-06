@@ -1,0 +1,43 @@
+\chapter{Literature Review}
+\label{ch:literature}
+
+The literature review tells the story of the work your thesis builds on. Group studies by
+theme, compare them, and show the gap that your work fills.
+
+\section{Citing Sources with Page Numbers}
+UKH requires a page number in every in-text citation, whatever the referencing style
+(Guideline 1c). Put the page in square brackets before the key:
+
+\begin{verbatim}
+\parencite[p.~9461]{lewis2020rag}
+\textcite[p.~425]{jarvelin2002cumulated}
+\parencite[pp.~758--759]{cormack2009reciprocal}
+\end{verbatim}
+
+These give \parencite[p.~9461]{lewis2020rag}, then \textcite[p.~425]{jarvelin2002cumulated},
+and \parencite[pp.~758--759]{cormack2009reciprocal}.
+
+Direct quotations longer than about forty words go in a \texttt{quote} environment, which
+is single spaced as the guidelines require:
+
+\begin{quote}
+An indented quotation is set with single line spacing, as Guideline 3d asks. Give the
+source and page number at the end \parencite[p.~2]{mahmudi2023meter}.
+\end{quote}
+
+\section{Writing Kurdish Text}
+Sorani Kurdish in Arabic script works out of the box. Inside an English sentence use
+\verb|\textkurdish{...}|, for example \textkurdish{زانکۆی کوردستان هەولێر}
+(University of Kurdistan Hewlêr). For a whole right-to-left paragraph, such as a quoted
+line of poetry, use the \texttt{kurdish} environment:
+
+\begin{kurdish}
+ئەمە نموونەیەکە بۆ نووسینی دەقی کوردی لە ناو نامەی ماستەردا.
+پیتە تایبەتەکانی کوردی: ڕ ڵ ێ ۆ ە ڤ.
+\end{kurdish}
+
+Kurdish studies relevant to this kind of work include information retrieval
+\parencite[p.~3]{esmaili2014kurdish} and poetry analysis \parencite[p.~1]{mahmudi2023meter}.
+
+\section{Summary}
+Summarise the gap in the literature that your thesis addresses.
