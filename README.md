@@ -51,7 +51,7 @@ Then:
   - from a Mac: `Arial.ttf`, `Arial Bold.ttf`, `Arial Italic.ttf`, `Arial Bold Italic.ttf`
 - Don't put those files in a public repo.
 
-**Kurdish fonts:** it uses Vazirmatn or Noto Naskh Arabic if you have them. Otherwise it uses Amiri, which comes with TeX Live and Overleaf.
+**Kurdish font:** it uses Amiri, which comes with TeX Live and Overleaf and has every Sorani letter. To use a different font that you have installed, add a line like `\setkurdishfont{Noto Naskh Arabic}` to `main.tex` before `\begin{document}`.
 
 ## Options
 
@@ -68,6 +68,6 @@ Then:
 
 ## Credits and license
 
-Kurdish support comes from the Kurdish module of [polyglossia](https://ctan.org/pkg/polyglossia). See also the [Kurdish XeLaTeX group](https://github.com/KurdishXeLaTeX).
+Kurdish support uses the Central Kurdish (ckb) language support in [babel](https://ctan.org/pkg/babel). See also the [Kurdish XeLaTeX group](https://github.com/KurdishXeLaTeX).
 
 MIT license. If something doesn't match the guidelines, open an issue or send a pull request.

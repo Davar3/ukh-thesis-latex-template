@@ -34,12 +34,14 @@
 \RequirePackage[a4paper,left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm,footskip=1.25cm]{geometry}
 
 %% ---------------------------------------------------------------- fonts
-%% Guideline 3e: Arial, 12 pt text. The class looks for Arial in this order:
-%%   1. Arial installed on the computer (Windows and macOS have it);
-%%   2. your own Arial files copied into a fonts/ folder in the project, which is how to
-%%      get real Arial on Overleaf (Arial is licensed by Microsoft, so this template cannot
-%%      include the files; never publish them in a public repository);
-%%   3. Arimo, a free font with exactly Arial's letter widths, so pages break the same way.
+%% Guideline 3e: Arial, 12 pt text. Fonts are found by file, not by name: asking the
+%% system for a font name that is not installed costs over a second on every run, which
+%% is enough to hit the compile-time limit of Overleaf's free plan. Order:
+%%   1. Arial as installed by macOS, Windows or Linux (Microsoft core fonts);
+%%   2. your own Arial files in a fonts/ folder of the project, which is how to get real
+%%      Arial on Overleaf (Arial is licensed by Microsoft, so this template cannot include
+%%      the files; never publish them in a public repository);
+%%   3. Arimo (in TeX Live), a free font with exactly Arial's letter widths.
 \RequirePackage{fontspec}
 %% Guideline 3d asks for two spaces between sentences: with \nonfrenchspacing below, the
 %% space after a full stop becomes exactly twice a normal word space.
@@ -47,14 +49,21 @@
 \newcommand{\ukh@setarial}[5]{% #1 path, #2 regular, #3 bold, #4 italic, #5 bold italic
   \setmainfont{#2}[Path=#1,BoldFont=#3,ItalicFont=#4,BoldItalicFont=#5]%
   \setsansfont{#2}[Path=#1,BoldFont=#3,ItalicFont=#4,BoldItalicFont=#5]}
-\IfFontExistsTF{Arial}{%
-  \setmainfont{Arial}%
-  \setsansfont{Arial}%
+\newcommand{\ukh@winarial}[1]{\ukh@setarial{#1}{arial.ttf}{arialbd.ttf}{ariali.ttf}{arialbi.ttf}}
+\newcommand{\ukh@macarial}[1]{%
+  \ukh@setarial{#1}{Arial.ttf}{Arial Bold.ttf}{Arial Italic.ttf}{Arial Bold Italic.ttf}}
+\IfFileExists{/System/Library/Fonts/Supplemental/Arial.ttf}{%
+  \ukh@macarial{/System/Library/Fonts/Supplemental/}%
+}{\IfFileExists{C:/Windows/Fonts/arial.ttf}{%
+  \ukh@winarial{C:/Windows/Fonts/}%
+}{\IfFileExists{/usr/share/fonts/truetype/msttcorefonts/Arial.ttf}{%
+  \ukh@setarial{/usr/share/fonts/truetype/msttcorefonts/}{Arial.ttf}{Arial_Bold.ttf}%
+    {Arial_Italic.ttf}{Arial_Bold_Italic.ttf}%
 }{\IfFileExists{fonts/arial.ttf}{% file names as copied from Windows
-  \ukh@setarial{fonts/}{arial.ttf}{arialbd.ttf}{ariali.ttf}{arialbi.ttf}%
+  \ukh@winarial{fonts/}%
 }{\IfFileExists{fonts/Arial.ttf}{% file names as copied from macOS
-  \ukh@setarial{fonts/}{Arial.ttf}{Arial Bold.ttf}{Arial Italic.ttf}{Arial Bold Italic.ttf}%
-}{\IfFontExistsTF{Arimo-Regular.ttf}{%
+  \ukh@macarial{fonts/}%
+}{\IfFontExistsTF{Arimo-Regular.ttf}{% a file name, found quickly in TeX Live
   \setmainfont{Arimo}[Extension=.ttf,UprightFont=*-Regular,BoldFont=*-Bold,
     ItalicFont=*-Italic,BoldItalicFont=*-BoldItalic]%
   \setsansfont{Arimo}[Extension=.ttf,UprightFont=*-Regular,BoldFont=*-Bold,
@@ -64,7 +73,7 @@
     ItalicFont=*-italic,BoldItalicFont=*-bolditalic]%
   \setsansfont{texgyreheros}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,
     ItalicFont=*-italic,BoldItalicFont=*-bolditalic]%
-}}}}
+}}}}}}
 \renewcommand{\familydefault}{\rmdefault}
 
 %% ---------------------------------------------------------------- spacing
@@ -73,8 +82,6 @@
 %% A stretch of 1.43 gives the same line pitch as Word's "1.5 lines" for Arial 12 pt.
 \RequirePackage{setspace}
 \setstretch{1.43}
-%% No paragraph indentation and one blank line between paragraphs.
-\RequirePackage[skip=12pt plus 2pt minus 1pt,indent=0pt]{parskip}
 %% Two spaces between sentences (see PunctuationSpace in the font set-up above).
 %% Write e.g.\ and i.e.\ with a backslash-space so they get a single space.
 \nonfrenchspacing
@@ -119,9 +126,6 @@
 \titlespacing*{\subsubsection}{0pt}{10pt}{2pt}
 \setcounter{secnumdepth}{2}
 \setcounter{tocdepth}{2}
-%% Kept so they can be restored after bidi (see the end of this file).
-\let\ukh@makechapterhead\@makechapterhead
-\let\ukh@makeschapterhead\@makeschapterhead
 
 %% ---------------------------------------------------------------- contents and lists
 \RequirePackage[titles]{tocloft}
@@ -161,6 +165,10 @@
 \renewcommand{\cftfigaftersnum}{}
 \renewcommand{\cfttabaftersnum}{}
 
+%% Guideline 3d: no paragraph indentation and one blank line between paragraphs.
+%% (Loaded after tocloft so the two do not both patch the contents lists.)
+\RequirePackage[skip=12pt plus 2pt minus 1pt,indent=0pt]{parskip}
+
 
 %% ---------------------------------------------------------------- floats and captions
 %% Guideline 6a: numbered within chapters (Table 1.1, Figure 3.1); figure captions centred
@@ -193,36 +201,32 @@
 \setlist{itemsep=2pt,topsep=4pt}
 
 %% ---------------------------------------------------------------- links
-%% Load order matters: hyperref, then polyglossia (which loads bidi), then biblatex.
 \RequirePackage[hidelinks,bookmarksnumbered,unicode]{hyperref}
 
-%% ---------------------------------------------------------------- Sorani Kurdish
-%% Kurdish (Central Kurdish, Arabic script) through polyglossia's Kurdish module.
+%% ---------------------------------------------------------------- languages
+%% British English, plus Sorani Kurdish (Central Kurdish, Arabic script) through babel's
+%% Central Kurdish locale. babel's own right-to-left support is used rather than the
+%% bidi package, which is much slower to load (it matters on Overleaf's free plan).
 %% Use \textkurdish{...} inside a sentence or \begin{kurdish} ... \end{kurdish}
 %% for a right-to-left paragraph such as a quoted poem.
 \ifukh@kurdish
-  \RequirePackage{polyglossia}
-  \setdefaultlanguage[variant=british]{english}
-  \setotherlanguage[variant=sorani,script=Arabic,numerals=eastern]{kurdish}
-  \IfFontExistsTF{Vazirmatn}{%
-    \newfontfamily\kurdishfont[Script=Arabic,Scale=MatchLowercase]{Vazirmatn}%
-  }{\IfFontExistsTF{Noto Naskh Arabic}{%
-    \newfontfamily\kurdishfont[Script=Arabic,Scale=1.05]{Noto Naskh Arabic}%
-  }{%
-    %% Amiri ships with TeX Live and Overleaf and covers every Sorani letter.
-    \newfontfamily\kurdishfont[Script=Arabic,Scale=1.15,Extension=.ttf,
-      UprightFont=*-Regular,BoldFont=*-Bold,ItalicFont=*-Italic,
-      BoldItalicFont=*-BoldItalic]{Amiri}%
-  }}
-  \let\arabicfont\kurdishfont
-  \let\kurdishfontsf\kurdishfont
-  \let\kurdishfonttt\kurdishfont
+  \RequirePackage[bidi=default,british]{babel}
+  \babelprovide[import,mapdigits]{centralkurdish}
+  %% Kurdish font: Amiri, which ships with TeX Live and Overleaf and has every Sorani
+  %% letter. Another font can be chosen in main.tex, for example
+  %% \setkurdishfont[Scale=1.05]{Noto Naskh Arabic} or \setkurdishfont{Vazirmatn}.
+  \newcommand{\setkurdishfont}[2][]{%
+    \babelfont[centralkurdish]{rm}[Script=Arabic,#1]{#2}%
+    \babelfont[centralkurdish]{sf}[Script=Arabic,#1]{#2}}
+  \setkurdishfont[Scale=1.15,Extension=.ttf,UprightFont=*-Regular,BoldFont=*-Bold,
+    ItalicFont=*-Italic,BoldItalicFont=*-BoldItalic]{Amiri}
   %% Arabic-script letters at the end of a word can overhang the space before them,
   %% so inline Kurdish gets a little extra room on both sides.
-  \AddToHook{begindocument/end}{%
-    \NewCommandCopy{\ukh@textkurdish}{\textkurdish}
-    \DeclareDocumentCommand{\textkurdish}{O{}m}{%
-      \hspace{0.15em}\ukh@textkurdish[#1]{#2}\hspace{0.15em}}}
+  \newcommand{\textkurdish}[1]{%
+    \hspace{0.15em}\foreignlanguage{centralkurdish}{#1}\hspace{0.15em}}
+  \newenvironment{kurdish}{\@nameuse{otherlanguage*}{centralkurdish}}{\@nameuse{endotherlanguage*}}
+\else
+  \RequirePackage[british]{babel}
 \fi
 
 %% ---------------------------------------------------------------- references
@@ -230,9 +234,17 @@
 %% must include a page number, for example \parencite[p.~12]{key} -> (Author, 2020, p. 12).
 \RequirePackage{csquotes}
 \ifukh@numeric
-  \RequirePackage[backend=biber,style=ieee]{biblatex}
+  \RequirePackage[backend=biber,style=ieee,language=british,autolang=none]{biblatex}
 \else
-  \RequirePackage[backend=biber,style=apa]{biblatex}
+  \RequirePackage[backend=biber,style=apa,language=british,autolang=none]{biblatex}
+\fi
+%% biblatex has no Kurdish strings; let it use the English ones for the Kurdish language.
+\ifukh@kurdish
+  \ifukh@numeric
+    \DeclareLanguageMapping{centralkurdish}{english}
+  \else
+    \DeclareLanguageMapping{centralkurdish}{english-apa}
+  \fi
 \fi
 \DefineBibliographyStrings{english}{references={References}}
 \defbibheading{ukhrefs}[\refname]{%
@@ -446,17 +458,11 @@
     \vspace*{1.5cm}
   \end{titlepage}}
 
-%% ---------------------------------------------------------------- after bidi
-%% bidi (loaded by polyglossia for right-to-left Kurdish) re-applies the report class's
-%% default title page and chapter headings at the end of the preamble. Put the UKH
-%% versions back once the document starts, and keep the UKH name for the contents list.
-\let\ukh@maketitle\maketitle
+%% ---------------------------------------------------------------- start of document
+%% babel sets the English names at \begin{document}; keep the UKH name for the contents
+%% list, and start the contents and the two lists on a new page each.
 \AddToHook{begindocument/end}{%
-  \let\maketitle\ukh@maketitle
-  \let\@makechapterhead\ukh@makechapterhead
-  \let\@makeschapterhead\ukh@makeschapterhead
   \renewcommand{\contentsname}{Table of Contents}%
-  %% bidi also swaps in the report class's contents commands; use tocloft's again.
   \renewcommand{\tableofcontents}{\clearpage\@cfttocstart\par\begingroup
     \parindent\z@ \parskip\cftparskip\@cftmaketoctitle\@starttoc{toc}\endgroup
     \@cfttocfinish}%
