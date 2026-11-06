@@ -10,7 +10,7 @@ It's not an official UKH template, so check with your supervisor and the latest 
 
 ## How to use it
 
-**Overleaf:** download this repo as a ZIP. On Overleaf go to New Project > Upload Project. It compiles with XeLaTeX (set in `latexmkrc`). If it doesn't, change the compiler to XeLaTeX from the menu.
+**Overleaf:** download this repo as a ZIP. On Overleaf go to New Project > Upload Project. The `latexmkrc` file makes it compile with XeLaTeX. If you still get an error asking for XeLaTeX, set Menu > Compiler > XeLaTeX.
 
 **Your own computer:** install TeX Live or MacTeX, then run `latexmk` in the folder.
 
